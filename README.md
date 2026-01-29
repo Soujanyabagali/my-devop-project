@@ -70,16 +70,11 @@ docker run -p 5000:5000 -e APP_ENV=test -e GREETING_TEST="Hello Docker Test" my-
 ```
 
 CI (GitHub Actions)
-- The `.github/workflows/ci.yml` pipeline installs dependencies, runs `pytest`, builds the Docker image, and optionally publishes to Docker Hub.
-
-Publish to Docker Hub (optional)
-To auto-publish images from CI:
-1. Create a Docker Hub account at https://hub.docker.com
-2. Create a personal access token (Settings → Security → Access Tokens)
-3. Add GitHub Secrets to your repo (Settings → Secrets and variables → Actions):
-   - `DOCKER_HUB_USERNAME` — your Docker Hub username
-   - `DOCKER_HUB_TOKEN` — your access token
-4. The CI workflow will auto-build and push `<username>/my-devops-project:latest` on each push.
+- The `.github/workflows/ci.yml` pipeline:
+  1. Installs dependencies
+  2. Runs `pytest` tests
+  3. Builds the Docker image
+- No secrets required — runs automatically on every push to `main` or `master`
 
 Deploy to Render (free PaaS)
 1. Create a free Render.com account at https://render.com
