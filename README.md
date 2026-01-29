@@ -1,5 +1,7 @@
 # My DevOps Project — Flask config & environments
 
+[![CI](https://github.com/Soujanyabagali/my-devop-project/actions/workflows/ci.yml/badge.svg)](https://github.com/Soujanyabagali/my-devop-project/actions/workflows/ci.yml)
+
 Overview
 - Simple Flask app that reads configuration from environment variables.
 - Local development uses a `.env` file (with `python-dotenv`).
@@ -68,8 +70,36 @@ docker run -p 5000:5000 -e APP_ENV=test -e GREETING_TEST="Hello Docker Test" my-
 ```
 
 CI (GitHub Actions)
-- The `.github/workflows/ci.yml` pipeline installs dependencies, runs `pytest`, and builds the Docker image.
+- The `.github/workflows/ci.yml` pipeline installs dependencies, runs `pytest`, builds the Docker image, and optionally publishes to Docker Hub.
+
+Publish to Docker Hub (optional)
+To auto-publish images from CI:
+1. Create a Docker Hub account at https://hub.docker.com
+2. Create a personal access token (Settings → Security → Access Tokens)
+3. Add GitHub Secrets to your repo (Settings → Secrets and variables → Actions):
+   - `DOCKER_HUB_USERNAME` — your Docker Hub username
+   - `DOCKER_HUB_TOKEN` — your access token
+4. The CI workflow will auto-build and push `<username>/my-devops-project:latest` on each push.
+
+Deploy to Render (free PaaS)
+1. Create a free Render.com account at https://render.com
+2. Create a new "Web Service" and connect your GitHub repo
+3. Set build command: `pip install -r requirements.txt`
+4. Set start command: `python -m app.main`
+5. Under "Environment" add runtime vars:
+   - `APP_ENV=prod`
+   - `GREETING=Hello from Render`
+   - `PORT=5000`
+6. Deploy — Render auto-builds and runs the app on each push.
+
+Deploy to Railway (free tier)
+1. Go to https://railway.app and sign in with GitHub
+2. Create a new project → Deploy from GitHub repo
+3. Select your repo and branch
+4. Add environment variables under "Variables"
+5. Deploy — Railway auto-detects the Flask app and runs it.
 
 Notes
 - Configuration values are never hardcoded in application logic — they are read from environment variables.
 - Use `.env` for local convenience only; never commit secrets to the repo.
+- For production, use strong credentials and store in GitHub Secrets or platform env vars.
